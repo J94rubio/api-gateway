@@ -88,8 +88,13 @@ const https = require("https");
 
 const proxyRequest = (req, res, targetBaseUrl) => {
   return new Promise((resolve, reject) => {
+    console.log("➡️ INCOMING REQUEST:");
+    console.log("Method:", req.method);
+    console.log("URL:", req.url);
+    console.log("Headers:", req.headers);
     // 🧠 Construir URL correctamente
     const targetUrl = new URL(req.url, targetBaseUrl);
+    console.log("🎯 TARGET URL:", targetUrl.href);
 
     // 🧹 Clonar headers y limpiar los problemáticos
     const headers = { ...req.headers };
@@ -97,6 +102,11 @@ const proxyRequest = (req, res, targetBaseUrl) => {
     delete headers["x-forwarded-host"];
     delete headers["x-forwarded-proto"];
     delete headers["x-forwarded-for"];
+
+    delete headers["origin"];
+    delete headers["referer"];
+
+    console.log("🧹 HEADERS ENVIADOS AL BACKEND:", headers);
 
     const options = {
       hostname: targetUrl.hostname,
@@ -117,9 +127,17 @@ const proxyRequest = (req, res, targetBaseUrl) => {
     }
 
     const proxy = https.request(options, (proxyRes) => {
+
+      console.log("📡 RESPONSE FROM SERVICE:");
+      console.log("Status:", proxyRes.statusCode);
+      console.log("Headers:", proxyRes.headers);
       // 🔁 Manejo de redirects (solo 1 nivel, evita loops)
       if ([301, 302, 308].includes(proxyRes.statusCode)) {
         const location = proxyRes.headers["location"];
+
+        console.log("🚨 REDIRECT DETECTADO:");
+        console.log("Status:", proxyRes.statusCode);
+        console.log("Location:", location);
 
         if (!location) {
           res.writeHead(proxyRes.statusCode);
@@ -174,6 +192,7 @@ const proxyRequest = (req, res, targetBaseUrl) => {
     req.pipe(proxy, { end: true });
 
     proxy.on("error", (err) => {
+      console.error("❌ Proxy error:", err);
       console.error("Proxy error:", err);
       res.writeHead(500);
       res.end("Proxy error");
