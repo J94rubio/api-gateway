@@ -109,11 +109,6 @@ const proxyRequest = (req, res, targetBaseUrl) => {
       },
     };
 
-    // 🌐 Manejo CORS (CLAVE PARA LOCALHOST)
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
     // 🔥 Manejo de preflight (OPTIONS)
     if (req.method === "OPTIONS") {
       res.writeHead(200);
