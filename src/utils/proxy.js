@@ -12,7 +12,7 @@ const proxyRequest = (req, res, targetBaseUrl) => {
       headers: req.headers,
     };
 
-    const proxy = http.request(options, (proxyRes) => {
+    const proxy = https.request(options, (proxyRes) => {
       res.writeHead(proxyRes.statusCode, proxyRes.headers);
 
       proxyRes.pipe(res, { end: true });
