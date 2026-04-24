@@ -1,0 +1,226 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Notes App API Gateway",
+    "version": "1.0.0",
+    "description": "API Gateway que centraliza estudiantes y notas"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Students",
+      "description": "Gestión de estudiantes"
+    },
+    {
+      "name": "Grades",
+      "description": "Gestión de notas"
+    }
+  ],
+  "paths": {
+    "/students": {
+      "get": {
+        "summary": "Listar estudiantes",
+        "tags": ["Students"],
+        "responses": {
+          "200": {
+            "description": "Lista de estudiantes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Student"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear estudiante",
+        "tags": ["Students"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Estudiante creado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Student"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos"
+          }
+        }
+      }
+    },
+    "/students/{cedula}": {
+      "get": {
+        "summary": "Buscar estudiante por cédula",
+        "tags": ["Students"],
+        "parameters": [
+          {
+            "name": "cedula",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Cédula del estudiante"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estudiante encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Student"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado"
+          }
+        }
+      }
+    },
+    "/grades": {
+      "post": {
+        "summary": "Registrar notas",
+        "tags": ["Grades"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GradeInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Notas registradas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Grade"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/grades/{student_id}": {
+      "get": {
+        "summary": "Consultar notas por estudiante",
+        "tags": ["Grades"],
+        "parameters": [
+          {
+            "name": "student_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notas del estudiante",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Grade"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Student": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "cedula": { "type": "string", "example": "123456" },
+          "nombre": { "type": "string", "example": "Juan Pérez" },
+          "correo": { "type": "string", "example": "juan@email.com" },
+          "celular": { "type": "string", "example": "3001234567" },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "StudentInput": {
+        "type": "object",
+        "required": ["cedula", "nombre", "correo", "celular"],
+        "properties": {
+          "cedula": { "type": "string", "example": "123456" },
+          "nombre": { "type": "string", "example": "Juan Pérez" },
+          "correo": { "type": "string", "example": "juan@email.com" },
+          "celular": { "type": "string", "example": "3001234567" }
+        }
+      },
+      "Grade": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "student_id": { "type": "integer", "example": 1 },
+          "materia": { "type": "string", "example": "Matemáticas" },
+          "nota1": { "type": "number", "example": 4.0 },
+          "nota2": { "type": "number", "example": 3.5 },
+          "nota3": { "type": "number", "example": 4.2 },
+          "nota4": { "type": "number", "example": 5.0 },
+          "promedio": { "type": "number", "example": 4.2 }
+        }
+      },
+      "GradeInput": {
+        "type": "object",
+        "required": [
+          "student_id",
+          "materia",
+          "nota1",
+          "nota2",
+          "nota3",
+          "nota4"
+        ],
+        "properties": {
+          "student_id": { "type": "integer", "example": 1 },
+          "materia": { "type": "string", "example": "Matemáticas" },
+          "nota1": { "type": "number", "example": 4.0 },
+          "nota2": { "type": "number", "example": 3.5 },
+          "nota3": { "type": "number", "example": 4.2 },
+          "nota4": { "type": "number", "example": 5.0 }
+        }
+      }
+    }
+  }
+}
