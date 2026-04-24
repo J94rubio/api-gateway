@@ -1,4 +1,4 @@
-const http = require("http");
+const https = require("https");
 
 const proxyRequest = (req, res, targetBaseUrl) => {
   return new Promise((resolve, reject) => {
