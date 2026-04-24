@@ -22,7 +22,7 @@ const proxyRequest = (req, res, targetBaseUrl) => {
     };
 
     const proxy = https.request(options, (proxyRes) => {
-      🔥 Seguir redirects internamente en vez de reenviarlos al cliente
+      //🔥 Seguir redirects internamente en vez de reenviarlos al cliente
       if (proxyRes.statusCode === 301 || proxyRes.statusCode === 302 || proxyRes.statusCode === 308) {
         const location = proxyRes.headers["location"];
         console.log("↪ Redirect interno hacia:", location);
